@@ -1,7 +1,10 @@
 package javaservlets.tokens;
 
 import java.io.IOException;
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.List;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
@@ -16,6 +19,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @Path("/UserService")
 public class UserService {
@@ -42,7 +46,7 @@ public class UserService {
 	@Path("/users")
 	@Produces(MediaType.APPLICATION_XML)
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public String creatUser(@FormParam("id") int id,
+	public String createUser(@FormParam("id") int id,
 			@FormParam("name") String name,
 			@FormParam("profession") String profession,
 			@Context HttpServletResponse servletResponse) throws IOException{
@@ -86,5 +90,34 @@ public class UserService {
 	@Produces(MediaType.APPLICATION_XML)
 	public String getSupportedOperations(){
 		return "<operations>GET, PUT, POST, DELETE</operations>";
+	}
+	
+		@POST
+		@Path("/authentication")	
+		@Produces("application/json")
+		@Consumes("application/x-www-form-urlencoded")
+		public Response authenticateUser(@FormParam("username") String username,
+										 @FormParam("password") String password){
+			try{
+				authenticate(username,password);
+				
+				String token=issueToken(username);
+				
+				return Response.ok(token).build();
+			}catch(Exception e){
+				return Response.status(Response.Status.UNAUTHORIZED).build();
+			}
+		}
+
+		private void authenticate(String username, String password)throws Exception{
+			
+		}
+		
+		private String issueToken(String username){
+			Random random = new SecureRandom();
+			String token = new BigInteger(130,random).toString(32);
+			return token;
+		}
+		
 	}
 }

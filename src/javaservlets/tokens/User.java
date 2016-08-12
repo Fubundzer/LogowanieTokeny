@@ -4,13 +4,20 @@ import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import sun.util.calendar.LocalGregorianCalendar.Date;
+
 @XmlRootElement(name ="user")
 public class User implements Serializable{
 
 	private static final long serialVersionUID=1L;
 	private int id;
+	private String username;
+	private String password;
 	private String name;
 	private String profession;
+	private String token;
+	private Date tokenExpDate;
 	
 	public User(){}
 	
@@ -29,6 +36,24 @@ public class User implements Serializable{
 		this.id=id;
 	}
 	
+	public String getUsername(){
+		return username;
+	}
+	
+	@XmlElement
+	public void setUsername(String username){
+		this.username=username;
+	}
+	
+	public String getPassword(){
+		return password;
+	}
+	
+	@XmlElement
+	public void setPassword(String password){
+		this.password=password;
+	}
+	
 	public String getName(){
 		return name;
 	}
@@ -45,6 +70,24 @@ public class User implements Serializable{
 	@XmlElement
 	public void setProfession(String profession){
 		this.profession=profession;
+	}
+	
+	public String getToken(){
+		return token;
+	}
+	
+	@XmlElement
+	public void setToken(String token){
+		this.token=token;
+	}
+	
+	public Date getTokenExpDate(){
+		return tokenExpDate;
+	}
+	
+	@XmlElement
+	public void setTokenExpDate(Date tokenExpDate){
+		this.tokenExpDate=tokenExpDate;
 	}
 	
 	@Override
