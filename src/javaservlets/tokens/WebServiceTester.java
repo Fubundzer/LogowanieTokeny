@@ -113,12 +113,12 @@ public class WebServiceTester {
 	}
 	
 	//Test: Delete User of id 2
-	//Test: Check if result is succes XML.
+	//Test: Check if result is success XML.
 	private void testDeleteUser(){
 		String callResult = client
 				.target(REST_SERVICE_URL)
 				.path("/{userid}")
-				.resolveTemplate("userid", 2)
+				.resolveTemplate("userid",2)
 				.request(MediaType.APPLICATION_XML)
 				.delete(String.class);
 		
