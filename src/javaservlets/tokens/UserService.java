@@ -6,6 +6,7 @@ import java.security.SecureRandom;
 import java.util.List;
 import java.util.Random;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -35,6 +36,48 @@ public class UserService {
 		return userDao.getAllUsers();
 	}
 	
+	@POST
+	@Path("/users/test")
+	@Produces(MediaType.TEXT_PLAIN)
+	//@Consumes("application/x-www-form-urlencoded")
+	public String getUsers(@FormParam("username") String username,
+			@FormParam("password") String password,
+			@Context HttpServletRequest req, @Context HttpServletResponse response){
+		//String username = req.getParameter("username");
+		//String password = req.getParameter("password");	
+		
+		String ret = username + password;
+		
+		if(userDao.existUser(username, password)){
+			User uUser = new User(userDao.getUser(username, password));
+			uUser.setToken(userDao.issueToken());
+			
+			uUser.setTokenExpDate();
+			
+			//if(uUser.getTokenExpDate().equals(null))
+			//{
+			//	ret+="nie ma daty";
+			//}
+			
+			//uUser.setTokenExpDate();
+			//ret+=userDao.getUser(username, password).getName();
+			userDao.updateUser(uUser);
+			ret+="User exists!"+uUser.getToken()+"     "+uUser.getTokenExpDate();
+		}else{
+			ret+="User does not exist";
+		}
+		
+		return ret;
+	}
+	
+	/*@GET
+	@Path("/users")
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response getUsers(@FormParam("username") String username){
+		System.out.println(username);
+		return Response.ok("username "+ username).build();
+	}*/
+	
 	@GET
 	@Path("/users/{userid}")
 	@Produces(MediaType.APPLICATION_XML)
@@ -49,8 +92,10 @@ public class UserService {
 	public String createUser(@FormParam("id") int id,
 			@FormParam("name") String name,
 			@FormParam("profession") String profession,
+			@FormParam("username") String username,
+			@FormParam("password") String password,
 			@Context HttpServletResponse servletResponse) throws IOException{
-			User user = new User(id,name,profession);
+			User user = new User(id,name,profession,username,password);
 			int result = userDao.addUser(user);
 			if(result==1){
 				return SUCCESS_RESULT;
@@ -65,8 +110,10 @@ public class UserService {
 	public String updateUser(@FormParam("id") int id,
 			@FormParam("name") String name,
 			@FormParam("profession") String profession,
+			@FormParam("username") String username,
+			@FormParam("password") String password,
 			@Context HttpServletResponse servletResponse) throws IOException{
-			User user = new User(id,name,profession);
+			User user = new User(id,name,profession,username,password);
 			int result=userDao.updateUser(user);
 			if(result==1){
 				return SUCCESS_RESULT;
@@ -91,8 +138,9 @@ public class UserService {
 	public String getSupportedOperations(){
 		return "<operations>GET, PUT, POST, DELETE</operations>";
 	}
+}
 	
-		@POST
+	/*	@POST
 		@Path("/authentication")	
 		@Produces("application/json")
 		@Consumes("application/x-www-form-urlencoded")
@@ -119,5 +167,4 @@ public class UserService {
 			return token;
 		}
 		
-	}
-}
+	}*/

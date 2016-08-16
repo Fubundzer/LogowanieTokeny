@@ -7,8 +7,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class UserDao {
 	
@@ -17,7 +20,8 @@ public class UserDao {
 		try{
 			File file = new File("Users.dat");
 			if(!file.exists()){
-				User user = new User(1,"Mahesh","Teacher");
+				User user = new User(1,"Mahesh","Teacher","asd","asd");
+				//User user = new User(1,"asd","asd");
 				userList=new ArrayList<User>();
 				userList.add(user);
 				saveUserlist(userList);
@@ -41,6 +45,17 @@ public class UserDao {
 		
 		for(User user: users){
 			if(user.getId()==id){
+				return user;
+			}
+		}
+		return null;
+	}
+	
+	public User getUser(String username, String password){
+		List<User> users = getAllUsers();
+		
+		for(User user: users){
+			if(user.getUsername().equals(username)&&user.getPassword().equals(password)){
 				return user;
 			}
 		}
@@ -107,5 +122,25 @@ public class UserDao {
 		}catch(IOException e){
 			e.printStackTrace();
 		}
+	}
+	
+	public boolean existUser(String username, String password)
+	{
+		List<User> users = getAllUsers();
+		
+		for(User user : users)
+		{
+			if(user.getUsername().equals(username)&&user.getPassword().equals(password))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public String issueToken(){
+		Random random = new SecureRandom();
+		String token = new BigInteger(130,random).toString(32);
+		return token;
 	}
 }

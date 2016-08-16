@@ -78,6 +78,8 @@ public class WebServiceTester {
 		form.param("id", "1");
 		form.param("name", "suresh");
 		form.param("profession", "clerk");
+		form.param("username", "qwe");
+		form.param("password", "qwe");
 		
 		String callResult = client
 				.target(REST_SERVICE_URL)
@@ -97,6 +99,9 @@ public class WebServiceTester {
 		form.param("id", "2");
 		form.param("name", "naresh");
 		form.param("profession", "clerk");
+		form.param("username", "qweq");
+		form.param("password", "qweq");
+		
 		
 		String callResult = client
 				.target(REST_SERVICE_URL)

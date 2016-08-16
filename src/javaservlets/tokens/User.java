@@ -5,7 +5,8 @@ import java.io.Serializable;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import sun.util.calendar.LocalGregorianCalendar.Date;
+//import sun.util.calendar.LocalGregorianCalendar.Date;
+import java.util.Date;
 
 @XmlRootElement(name ="user")
 public class User implements Serializable{
@@ -21,11 +22,29 @@ public class User implements Serializable{
 	
 	public User(){}
 	
-	public User(int id, String name, String profession){
+	public User(int id, String name, String profession,String username, String password){
 		this.id=id;
 		this.name=name;
 		this.profession=profession;
+		this.username=username;
+		this.password=password;
+		this.tokenExpDate=new Date();
 	}
+	
+	public User(User user){
+		this.id=user.id;
+		this.name=user.name;
+		this.profession=user.profession;
+		this.username=user.username;
+		this.password=user.password;
+		this.tokenExpDate=user.getTokenExpDate();
+	}
+	
+	/*public User(int id,String username, String password){
+		this.id=id;
+		this.username=username;
+		this.password=password;
+	}*/
 	
 	public int getId(){
 		return id;
@@ -76,7 +95,7 @@ public class User implements Serializable{
 		return token;
 	}
 	
-	@XmlElement
+	//@XmlElement
 	public void setToken(String token){
 		this.token=token;
 	}
@@ -85,9 +104,17 @@ public class User implements Serializable{
 		return tokenExpDate;
 	}
 	
-	@XmlElement
-	public void setTokenExpDate(Date tokenExpDate){
-		this.tokenExpDate=tokenExpDate;
+	//@XmlElement
+	public void setTokenExpDate(){
+		//new Date().getHours()-this.tokenExpDate.getHours()>1||
+		if(new Date().getHours()-this.tokenExpDate.getHours()>=1)
+		{
+			System.out.println("test");
+		this.tokenExpDate = new Date();
+		}else{
+			System.out.println("asdas");
+		}
+		//this.tokenExpDate=tokenExpDate;
 	}
 	
 	@Override
