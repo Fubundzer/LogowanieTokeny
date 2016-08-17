@@ -69,11 +69,13 @@ public class UserService {
 	
 	@POST
 	@Path("/users/test")
-	@Produces(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.TEXT_HTML)
 	//@Consumes("application/x-www-form-urlencoded")
 	public String getUsers(@FormParam("username") String username,
 			@FormParam("password") String password,
 			@Context HttpServletRequest req, @Context HttpServletResponse response) throws IOException{	
+		
+		String html = "\n<html><head><body><a href=\"http://localhost:8080/HelloWorldWeb/rest/UserService/users/test3\">link</a></body></head></html>";
 		
 		String ret = username + password;
 		if(userDao.existUser(username, password)){
@@ -97,7 +99,7 @@ public class UserService {
 			ret+="User does not exist";
 		}
 		
-		return ret;
+		return ret+html;
 	}
 	
 	@GET
@@ -106,6 +108,15 @@ public class UserService {
 	@Produces(MediaType.TEXT_HTML)
 	public String test3(){
 		return "asda";
+	}
+	
+	@GET
+	@Path("/users/test4")
+	@Produces(MediaType.TEXT_HTML)
+	public String test4()
+	{
+		String html = "<html><head><body><a href=\"http://localhost:8080/HelloWorldWeb/rest/UserService/users/test3\">link</a></body></head></html>";
+		return html;
 	}
 	
 	@GET
