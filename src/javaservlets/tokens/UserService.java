@@ -6,6 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.math.BigInteger;
+import java.net.URL;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Random;
@@ -24,6 +25,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.Produces;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Context;
@@ -32,6 +36,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
+
+import java.net.URLConnection;
+
 import javax.ws.rs.NameBinding;
 import javax.ws.rs.NotAuthorizedException;
 
@@ -76,7 +83,14 @@ public class UserService {
 			uUser.setTokenExpDate();
 			userDao.updateUser(uUser);
 			
+			//Client client = ClientBuilder.newClient();
+			//HttpAuthenticationFeature feature = HttpAuthenticationFeature.basicBuilder().build();
+			//WebTarget target = client.target("/users/test3").request("...").header(HttpHeaders.AUTHORIZATION, "Bearer "+uUser.getToken());
+			//WebTarget target = client.target("/users/test").request().header(HttpHeaders.AUTHORIZATION, "Bearer "+uUser.getToken());
 			
+			//URL url = new URL("/users/test");
+			///URLConnection urlConnection = url.openConnection();
+			//urlConnection.setRequestProperty(HttpHeaders.AUTHORIZATION, "Bearer "+uUser.getToken());
 			
 			ret+="User exists!  "+uUser.getToken()+"     "+userDao.getUser(uUser.getId()).getTokenExpDate();
 		}else{
