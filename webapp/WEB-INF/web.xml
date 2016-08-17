@@ -4,6 +4,10 @@
   <servlet>
     <servlet-name>Jersey RESTful App</servlet-name>
     <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+    	<init-param>
+    		<param-name>com.sun.jersey.spi.container.ContainerRequestFilters</param-name>
+    		<param-value>javaservlets.tokens.AuthenticationFilter</param-value>
+    	</init-param>
   		<init-param>
   			<param-name>jersey.config.server.provider.packages</param-name>
   			<param-value>javaservlets.tokens</param-value>

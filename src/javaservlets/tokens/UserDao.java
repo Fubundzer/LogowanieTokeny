@@ -20,7 +20,7 @@ public class UserDao {
 		try{
 			File file = new File("Users.dat");
 			if(!file.exists()){
-				User user = new User(1,"Mahesh","Teacher","asd","asd");
+				User user = new User(1,"Mahesh","Teacher","asd","asd","token");
 				//User user = new User(1,"asd","asd");
 				userList=new ArrayList<User>();
 				userList.add(user);
@@ -84,7 +84,7 @@ public class UserDao {
 		for(User user: userList){
 			if(user.getId()==pUser.getId()){
 				int index = userList.indexOf(user);
-				userList.set(index,user);
+				userList.set(index,pUser);
 				saveUserlist(userList);
 				return 1;
 			}

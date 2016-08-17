@@ -22,12 +22,13 @@ public class User implements Serializable{
 	
 	public User(){}
 	
-	public User(int id, String name, String profession,String username, String password){
+	public User(int id, String name, String profession,String username, String password, String token){
 		this.id=id;
 		this.name=name;
 		this.profession=profession;
 		this.username=username;
 		this.password=password;
+		this.token=token;
 		this.tokenExpDate=new Date();
 	}
 	
@@ -107,11 +108,20 @@ public class User implements Serializable{
 	//@XmlElement
 	public void setTokenExpDate(){
 		//new Date().getHours()-this.tokenExpDate.getHours()>1||
-		if(new Date().getHours()-this.tokenExpDate.getHours()>=1)
+		if(new Date().getTime()-this.tokenExpDate.getTime()>=3600000)
 		{
-			System.out.println("test");
-		this.tokenExpDate = new Date();
+			System.out.println("test  "+(new Date().getTime()-this.tokenExpDate.getTime())+"  "+this.tokenExpDate.toString());
+		
+			Date data=new Date();
+			
+			this.tokenExpDate.setTime(new Date().getTime());;
+			System.out.println(this.tokenExpDate.toString());
 		}else{
+			Date data = new Date();
+			data.setHours(11);
+			System.out.println(tokenExpDate.getTime());
+			System.out.println(data.getTime()-new Date().getTime());
+			System.out.println(this.tokenExpDate.toString()+"   "+data.toString()+"   "+data.getTime());
 			System.out.println("asdas");
 		}
 		//this.tokenExpDate=tokenExpDate;

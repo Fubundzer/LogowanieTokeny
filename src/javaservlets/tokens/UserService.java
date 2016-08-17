@@ -1,11 +1,16 @@
 package javaservlets.tokens;
 
 import java.io.IOException;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Random;
 
+import javax.annotation.Priority;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
@@ -17,15 +22,24 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Priorities;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.Provider;
+import javax.ws.rs.NameBinding;
+import javax.ws.rs.NotAuthorizedException;
 
 @Path("/UserService")
 public class UserService {
 
 	UserDao userDao=new UserDao();
+	//AuthenticationFilter filter = new AuthenticationFilter(userDao);
 	private static final String SUCCESS_RESULT="<result>succes</result>";
 	private static final String FAILURE_RESULT="<result>failure</result>";
 	
@@ -36,33 +50,35 @@ public class UserService {
 		return userDao.getAllUsers();
 	}
 	
+	@GET
+	@Path("/users/test2")
+	@Produces(MediaType.APPLICATION_XML)
+	public	String getHeader(@Context HttpHeaders hh){
+		//String cos2=hh.AUTHORIZATION;
+		MultivaluedMap<String, String> headerParams=hh.getRequestHeaders();
+		String cos =headerParams.toString();
+		return cos;
+	}
+	
 	@POST
 	@Path("/users/test")
 	@Produces(MediaType.TEXT_PLAIN)
 	//@Consumes("application/x-www-form-urlencoded")
 	public String getUsers(@FormParam("username") String username,
 			@FormParam("password") String password,
-			@Context HttpServletRequest req, @Context HttpServletResponse response){
-		//String username = req.getParameter("username");
-		//String password = req.getParameter("password");	
+			@Context HttpServletRequest req, @Context HttpServletResponse response) throws IOException{	
 		
 		String ret = username + password;
-		
 		if(userDao.existUser(username, password)){
 			User uUser = new User(userDao.getUser(username, password));
 			uUser.setToken(userDao.issueToken());
 			
 			uUser.setTokenExpDate();
-			
-			//if(uUser.getTokenExpDate().equals(null))
-			//{
-			//	ret+="nie ma daty";
-			//}
-			
-			//uUser.setTokenExpDate();
-			//ret+=userDao.getUser(username, password).getName();
 			userDao.updateUser(uUser);
-			ret+="User exists!"+uUser.getToken()+"     "+uUser.getTokenExpDate();
+			
+			
+			
+			ret+="User exists!  "+uUser.getToken()+"     "+userDao.getUser(uUser.getId()).getTokenExpDate();
 		}else{
 			ret+="User does not exist";
 		}
@@ -70,13 +86,13 @@ public class UserService {
 		return ret;
 	}
 	
-	/*@GET
-	@Path("/users")
-	@Produces(MediaType.TEXT_PLAIN)
-	public Response getUsers(@FormParam("username") String username){
-		System.out.println(username);
-		return Response.ok("username "+ username).build();
-	}*/
+	@GET
+	@Secured
+	@Path("/users/test3")
+	@Produces(MediaType.TEXT_HTML)
+	public String test3(){
+		return "asda";
+	}
 	
 	@GET
 	@Path("/users/{userid}")
@@ -94,8 +110,9 @@ public class UserService {
 			@FormParam("profession") String profession,
 			@FormParam("username") String username,
 			@FormParam("password") String password,
+			@FormParam("password") String token,
 			@Context HttpServletResponse servletResponse) throws IOException{
-			User user = new User(id,name,profession,username,password);
+			User user = new User(id,name,profession,username,password,token);
 			int result = userDao.addUser(user);
 			if(result==1){
 				return SUCCESS_RESULT;
@@ -112,8 +129,9 @@ public class UserService {
 			@FormParam("profession") String profession,
 			@FormParam("username") String username,
 			@FormParam("password") String password,
+			@FormParam("password") String token,
 			@Context HttpServletResponse servletResponse) throws IOException{
-			User user = new User(id,name,profession,username,password);
+			User user = new User(id,name,profession,username,password,token);
 			int result=userDao.updateUser(user);
 			if(result==1){
 				return SUCCESS_RESULT;
@@ -139,32 +157,3 @@ public class UserService {
 		return "<operations>GET, PUT, POST, DELETE</operations>";
 	}
 }
-	
-	/*	@POST
-		@Path("/authentication")	
-		@Produces("application/json")
-		@Consumes("application/x-www-form-urlencoded")
-		public Response authenticateUser(@FormParam("username") String username,
-										 @FormParam("password") String password){
-			try{
-				authenticate(username,password);
-				
-				String token=issueToken(username);
-				
-				return Response.ok(token).build();
-			}catch(Exception e){
-				return Response.status(Response.Status.UNAUTHORIZED).build();
-			}
-		}
-
-		private void authenticate(String username, String password)throws Exception{
-			
-		}
-		
-		private String issueToken(String username){
-			Random random = new SecureRandom();
-			String token = new BigInteger(130,random).toString(32);
-			return token;
-		}
-		
-	}*/
