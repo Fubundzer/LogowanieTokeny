@@ -26,15 +26,15 @@ public class WebServiceTester {
 		//initialize the tester
 		tester.init();
 		//test get all user Web Service Method
-		//tester.testGetAllUsers();
+		tester.testGetAllUsers();
 		//test get user Web Service Method
-		//tester.testGetUser();
+		tester.testGetUser();
 		//test update user Web Service Method
-		//tester.testUpdateUser();
+		tester.testUpdateUser();
 		//test add user Web Service Method
 		tester.testAddUser();
 		//test delete user Web Service Method
-		//tester.testDeleteUser();
+		tester.testDeleteUser();
 	}
 	
 	//Test: Get list of all users
@@ -76,8 +76,6 @@ public class WebServiceTester {
 	private void testUpdateUser(){
 		Form form = new Form();
 		form.param("id", "1");
-		form.param("name", "suresh");
-		form.param("profession", "clerk");
 		form.param("username", "qwe");
 		form.param("password", "qwe");
 		form.param("token", "token");
@@ -97,9 +95,7 @@ public class WebServiceTester {
 	//Test: Check if result is success XML.
 	private void testAddUser(){
 		Form form = new Form();
-		form.param("id", "1");
-		form.param("name", "naresh");
-		form.param("profession", "clerk");
+		form.param("id", "2");
 		form.param("username", "qweq");
 		form.param("password", "qweq");
 		form.param("token","token");

@@ -35,5 +35,8 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/osgi-resource-locator-1.0.1.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/persistence-api-1.0.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/validation-api-1.1.0.Final.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/httpclient-4.5.2.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/httpcore-4.4.5.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-logging-1.2.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
