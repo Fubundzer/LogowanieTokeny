@@ -19,6 +19,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 
 @Path("/UserService")
 public class UserService {
@@ -147,5 +148,32 @@ public class UserService {
 	@Produces(MediaType.APPLICATION_XML)
 	public String getSupportedOperations(){
 		return "<operations>GET, PUT, POST, DELETE</operations>";
+	}
+	
+	@POST
+	@Path("/users/authentication")
+	@Produces("application/json")
+	@Consumes("application/x-www-form-urlencoded")
+	public Response getUsers(@FormParam("username") String username,
+			@FormParam("password") String password,
+			@Context HttpServletResponse reponse){	
+			
+		try{
+			if(userDao.existUser(username, password)){
+				User uUser = new User(userDao.getUser(username, password));
+				uUser.setToken(userDao.issueToken());
+				uUser.setTokenExpDate();
+				userDao.updateUser(uUser);
+				reponse.setHeader(HttpHeaders.AUTHORIZATION, "Bearer "+userDao.getUser(uUser.getId()).getToken());
+				Response response = Response.ok(userDao.getUser(uUser.getId()).getToken())
+						//.header(HttpHeaders.AUTHORIZATION, "Bearer "+userDao.getUser(uUser.getId()).getToken())
+						.build();
+				System.out.println(response.getHeaderString(HttpHeaders.AUTHORIZATION));
+				return response;				
+				}
+			}catch(Exception e){
+				return Response.status(Response.Status.UNAUTHORIZED).build();
+			}
+		return null;
 	}
 }
