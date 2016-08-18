@@ -8,20 +8,24 @@ import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.container.ContainerResponseContext;
+import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
 @Secured
 @Provider
 @Priority(Priorities.AUTHENTICATION)
-public class AuthenticationFilter implements ContainerRequestFilter{
+public class AuthenticationFilter implements ContainerResponseFilter{
 
 	private UserDao userDao;
 	
 	@Override
-	public void filter(ContainerRequestContext requestContext) throws IOException {
-		String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
+	public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
+		//requestContext.getHeaders().add(HttpHeaders.AUTHORIZATION, "asda");
+		String authorizationHeader = responseContext.getHeaderString("x-token");
 		
 		System.out.println(authorizationHeader);
 		

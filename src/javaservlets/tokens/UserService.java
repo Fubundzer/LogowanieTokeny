@@ -78,7 +78,7 @@ public class UserService {
 	@Secured
 	@Path("/users/test3")
 	@Produces(MediaType.TEXT_HTML)
-	public String test3(){
+	public String test3(@Context HttpHeaders httpHeaders){
 		return "asda";
 	}
 	
@@ -87,7 +87,8 @@ public class UserService {
 	@Produces(MediaType.TEXT_HTML)
 	public String test4()
 	{
-		String html = "<html><head><body><a href=\"http://localhost:8080/HelloWorldWeb/rest/UserService/users/test3\">link</a></body></head></html>";
+		String html = "<html><head><body><a href=\"http://localhost:8080/HelloWorldWeb/rest/UserService/users/test6\">link</a></body></head></html>";
+		
 		return html;
 	}
 	
@@ -155,8 +156,7 @@ public class UserService {
 	@Produces("application/json")
 	@Consumes("application/x-www-form-urlencoded")
 	public Response getUsers(@FormParam("username") String username,
-			@FormParam("password") String password,
-			@Context HttpServletResponse reponse){	
+			@FormParam("password") String password){	
 			
 		try{
 			if(userDao.existUser(username, password)){
@@ -164,11 +164,10 @@ public class UserService {
 				uUser.setToken(userDao.issueToken());
 				uUser.setTokenExpDate();
 				userDao.updateUser(uUser);
-				reponse.setHeader(HttpHeaders.AUTHORIZATION, "Bearer "+userDao.getUser(uUser.getId()).getToken());
 				Response response = Response.ok(userDao.getUser(uUser.getId()).getToken())
-						//.header(HttpHeaders.AUTHORIZATION, "Bearer "+userDao.getUser(uUser.getId()).getToken())
+						.header("x-token", "Bearer "+userDao.getUser(uUser.getId()).getToken())
 						.build();
-				System.out.println(response.getHeaderString(HttpHeaders.AUTHORIZATION));
+				System.out.println(response.getHeaderString("x-token"));
 				return response;				
 				}
 			}catch(Exception e){
