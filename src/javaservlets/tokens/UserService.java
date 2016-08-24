@@ -74,6 +74,34 @@ public class UserService {
 		return ret+html;
 	}
 	
+	@POST
+	@Path("/users/login2")
+	@Produces(MediaType.TEXT_HTML)
+	public Response getUsers(@FormParam("username") String username,
+			@FormParam("password") String password) throws IOException{	
+
+		
+		if(userDao.existUser(username, password)){
+			User uUser = new User(userDao.getUser(username, password));
+			uUser.setToken(userDao.issueToken());
+			
+			uUser.setTokenExpDate();
+			userDao.updateUser(uUser);
+			System.out.println(userDao.getUser(uUser.getId()).getToken());	
+			return Response.ok(userDao.getUser(uUser.getId()).getToken()).header(HttpHeaders.AUTHORIZATION, uUser.getToken()).build();
+		}else{
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+		}
+	}
+	
+	@GET
+	@Secured
+	@Path("/users/test3")
+	@Produces(MediaType.TEXT_HTML)
+	public String test6(@Context HttpHeaders httpHeaders){
+		return httpHeaders.getHeaderString(HttpHeaders.AUTHORIZATION);
+	}
+	
 	@GET
 	@Secured
 	@Path("/users/test3")
@@ -149,30 +177,5 @@ public class UserService {
 	@Produces(MediaType.APPLICATION_XML)
 	public String getSupportedOperations(){
 		return "<operations>GET, PUT, POST, DELETE</operations>";
-	}
-	
-	@POST
-	@Path("/users/authentication")
-	@Produces("application/json")
-	@Consumes("application/x-www-form-urlencoded")
-	public Response getUsers(@FormParam("username") String username,
-			@FormParam("password") String password){	
-			
-		try{
-			if(userDao.existUser(username, password)){
-				User uUser = new User(userDao.getUser(username, password));
-				uUser.setToken(userDao.issueToken());
-				uUser.setTokenExpDate();
-				userDao.updateUser(uUser);
-				Response response = Response.ok(userDao.getUser(uUser.getId()).getToken())
-						.header("x-token", "Bearer "+userDao.getUser(uUser.getId()).getToken())
-						.build();
-				System.out.println(response.getHeaderString("x-token"));
-				return response;				
-				}
-			}catch(Exception e){
-				return Response.status(Response.Status.UNAUTHORIZED).build();
-			}
-		return null;
 	}
 }
